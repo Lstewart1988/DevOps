@@ -1,0 +1,18 @@
+import os
+import subprocess
+import json
+
+STUDENTNAME = input('What is your first name? ')
+agify_response = subprocess.run(['curl', '-L', f'https://api.agify.io/?name={STUDENTNAME}'], stdout=subprocess.PIPE)
+my_agify_info = json.loads(agify_response.stdout)
+
+latest_tf_response = subprocess.run(['curl', '-L', 'https://releases.hashicorp.com/terraform/index.json'], stdout=subprocess.PIPE)
+latest_tf_url = subprocess.run(['jq', '-r', '.versions[].builds[].url',], input=latest_tf_response.stdout, stdout=subprocess.PIPE).stdout.decode()
+latest_tf_url = [url for url in latest_tf_url.splitlines() if 'linux' in url and 'amd64' in url and ('rc' not in url and 'beta' not in url)][-1]
+
+filename = latest_tf_url.split('/')[-1]
+if not os.path.exists(filename):
+    subprocess.run(['curl', '-#L', latest_tf_url, '-o', filename])
+
+os.system('clear')
+print("That's all folks!")

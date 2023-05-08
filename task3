@@ -1,0 +1,13 @@
+import requests
+
+ipaddress = "161.35.252.68" 
+apikey = "abc12345" 
+
+url = f"https://ipwhois.io/json/{ipaddress}?apiKey={apikey}"
+response = requests.get(url)
+
+if response.status_code == 200:
+    data = response.json()
+    print(data)
+else:
+    print(f"Error {response.status_code}: {response.text}")
